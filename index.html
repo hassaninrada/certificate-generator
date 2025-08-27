@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    .certificate {
+      width: 900px;
+      height: 650px;
+      border: 10px solid #d4af37;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      padding: 40px;
+    }
+    .title { font-size: 36px; font-weight: bold; margin-bottom: 10px; }
+    .field { font-size: 28px; font-weight: bold; }
+    #logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      max-width: 120px;
+      max-height: 120px;
+      display: none;
+    }
+    .footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 14px;
+      color: #444;
+      font-style: italic;
+    }
+    /* Templates */
+    .template1 { background-image: url('https://t3.ftcdn.net/jpg/05/53/50/90/360_F_553509039_1VmGaPFjrhzzwgCbwNvZ1ZNOhYsEmUxP.jpg'); }
+    .template2 { background-image: url('https://t3.ftcdn.net/jpg/04/61/31/24/360_F_461312494_8FumCHhojk8COadhjgCwBQLZTrLTYqmi.jpg'); }
+    .template3 { background-image: url('https://png.pngtree.com/background/20250109/original/pngtree-certificate-background-with-green-gold-premium-design-vector-picture-image_16038242.jpg'); }
+    .template4 { background-image: url('https://images.template.net/474949/School-Recognition-Background-Certificate-Template-edit-online.png'); }
+    .template5 { background-image: url('https://images.template.net/474749/Maroon-Background-Certificate-Template-edit-online.png'); }
+  </style>
+</head>
+<body class="bg-gray-100 p-6">
+  <h1 class="text-2xl font-bold mb-4 text-center">🎓 Certificate Generator</h1>
+
+  <!-- Controls -->
+  <div class="mb-6 flex flex-wrap gap-4 justify-center">
+    <select id="templateSelect" class="border p-2 rounded">
+      <option value="template1">Template 1</option>
+      <option value="template2">Template 2</option>
+      <option value="template3">Template 3</option>
+      <option value="template4">Template 4</option>
+      <option value="template5">Template 5</option>
+    </select>
+    <input id="studentName" type="text" placeholder="Student Name" class="border p-2 rounded">
+    <input id="courseName" type="text" placeholder="Course Name" class="border p-2 rounded">
+    <input id="date" type="text" placeholder="Date" class="border p-2 rounded">
+    <input id="signature" type="text" placeholder="Signature" class="border p-2 rounded">
+    <input id="logoUpload" type="file" accept="image/*" class="border p-2 rounded">
+    <button onclick="downloadCert()" class="bg-blue-600 text-white px-4 py-2 rounded">Download</button>
+  </div>
+
+  <!-- Certificate Preview -->
+  <div id="certificate" class="certificate template1 mx-auto">
+    <img id="logo" alt="Logo">
+    <div class="title">Certificate of Achievement</div>
+    <div class="field" id="certName">[Student Name]</div>
+    <div class="field" id="certCourse">[Course Name]</div>
+    <div class="mt-4">Dated: <span id="certDate">[Date]</span></div>
+    <div class="mt-8">_____________________<br><span id="certSign">[Signature]</span></div>
+    <div class="footer">Powered by Hassanain Rada</div>
+  </div>
+
+  <script>
+    const templateSelect = document.getElementById("templateSelect");
+    const cert = document.getElementById("certificate");
+
+    templateSelect.addEventListener("change", () => {
+      cert.className = "certificate " + templateSelect.value;
+    });
+
+    document.getElementById("studentName").addEventListener("input", e => {
+      document.getElementById("certName").textContent = e.target.value || "[Student Name]";
+    });
+    document.getElementById("courseName").addEventListener("input", e => {
+      document.getElementById("certCourse").textContent = e.target.value || "[Course Name]";
+    });
+    document.getElementById("date").addEventListener("input", e => {
+      document.getElementById("certDate").textContent = e.target.value || "[Date]";
+    });
+    document.getElementById("signature").addEventListener("input", e => {
+      document.getElementById("certSign").textContent = e.target.value || "[Signature]";
+    });
+
+    // Logo Upload
+    document.getElementById("logoUpload").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const logo = document.getElementById("logo");
+          logo.src = event.target.result;
+          logo.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Download
+    function downloadCert() {
+      html2canvas(cert, {scale: 3}).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "certificate.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
+
+
